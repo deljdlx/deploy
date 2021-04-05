@@ -13,6 +13,7 @@ class Recipe
 
     use Traits\Shell;
     use Traits\File;
+    use Traits\Composer;
 
 
 

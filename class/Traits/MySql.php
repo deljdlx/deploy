@@ -7,26 +7,32 @@ Trait MySql
 
     public function registerMysqlTrait()
     {
-        $this->setTask('createBDD', function() {
-            $this->createBDD(
-                $this->get('DB_HOST'),
-                $this->get('DB_USER'),
-                $this->get('DB_PASSWORD'),
-                $this->get('DB_NAME')
-            );
-        });
 
-
-        $this->setTask('dropBDD', function() {
-            $this->dropBDD(
-                $this->get('DB_HOST'),
-                $this->get('DB_USER'),
-                $this->get('DB_PASSWORD'),
-                $this->get('DB_NAME')
-            );
-        });
     }
 
+
+    public function databaseExists($host, $user, $password, $database)
+    {
+        $query = "
+            SELECT SCHEMA_NAME
+                FROM INFORMATION_SCHEMA.SCHEMATA
+            WHERE SCHEMA_NAME = '{$database}'
+        ";
+
+        $answer = $this->bddQuery($host, $user, $password, $database, $query);
+
+
+        if($answer == $database) {
+            return true;
+        }
+        else {
+            return false;
+        }
+
+
+
+        return $answer;
+    }
 
     public function getBDDdump($host, $user, $password, $database, $output)
     {
@@ -51,8 +57,10 @@ Trait MySql
 
     public function bddQuery($host, $user, $password, $database, $query)
     {
-        print_r($query);
-        $this->run('mysql -h'. $host .' -u' . $user . ' -p' . $password . ' --execute="' . $query . '"');
-        return $this;
+        $answer = $this->run('mysql -h'. $host .' -u' . $user . ' -p' . $password . ' --execute="' . $query . '"  --skip-column-names', [
+            //'tty' => true
+        ]);
+
+        return $answer;
     }
 }

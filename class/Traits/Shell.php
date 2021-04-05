@@ -36,8 +36,7 @@ trait Shell
 
     public function run($command, $options = [])
     {
-        \Deployer\run($command, $options);
-        return $this;
+        return \Deployer\run($command, $options);
     }
 
 
@@ -45,5 +44,11 @@ trait Shell
     {
         return $this->test('[ -f "' . $path . '" ]');
     }
+
+    public function isDir($path)
+    {
+        return $this->test('[ -d "' . $path . '" ]');
+    }
+
 
 }
