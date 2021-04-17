@@ -48,5 +48,11 @@ Trait File
         return $this;
     }
 
+    public function mkdir($path)
+    {
+        $this->run('mkdir ' . $path);
+        return $this;
+    }
+
 
 }
