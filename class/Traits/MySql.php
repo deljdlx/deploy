@@ -63,4 +63,10 @@ Trait MySql
 
         return $answer;
     }
+
+    public function createAdminUser($login, $password, $host = 'localhost')
+    {
+        $this->run("sudo mysql -e\"CREATE USER '{$login}'@'{$host}' IDENTIFIED BY '{$password}';\" mysql");
+        $this->run("sudo mysql -e\"GRANT ALL PRIVILEGES ON *.* TO '{$login}'@'{$host}';\" mysql");
+    }
 }
