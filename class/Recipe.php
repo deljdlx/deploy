@@ -37,6 +37,35 @@ class Recipe
     }
 
 
+    public function generateGulpWatch($url, $path = null)
+    {
+        $template = "
+        var gulp = require('gulp');
+        var browserSync = require('browser-sync');
+        
+        
+        gulp.task('default', function() {
+          browserSync({
+            proxy: '{$url}'
+          });
+        
+          gulp.watch('**/*.php').on('change', function () {
+            browserSync.reload();
+          });
+        });
+        ";
+
+        if($path === null) {
+            $path = getcwd();
+        }
+
+        file_put_contents($path . '/gulpfile.js', $template);
+
+    }
+
+
+
+
 
     public function parse($string)
     {
