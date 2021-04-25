@@ -29,6 +29,14 @@ class Recipe
 
     }
 
+
+    public function ask($message, $default = null, $suggestedChoice = null)
+    {
+        $choice = \Deployer\ask($message, $default, $suggestedChoice);
+        return $choice;
+    }
+
+
     protected function registerTasks()
     {
         $this->setTask('ls', function() {
@@ -42,13 +50,13 @@ class Recipe
         $template = "
         var gulp = require('gulp');
         var browserSync = require('browser-sync');
-        
-        
+
+
         gulp.task('default', function() {
           browserSync({
             proxy: '{$url}'
           });
-        
+
           gulp.watch('**/*.php').on('change', function () {
             browserSync.reload();
           });
