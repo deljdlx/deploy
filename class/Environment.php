@@ -55,13 +55,21 @@ class Environment
 
     public function set($variableName, $value)
     {
+        $value = $this->parse($value);
         $this->variables[$variableName] = $value;
+
         $this->host->set($variableName, $value);
+
         return $this;
     }
 
-    public function hostname($name)
+    public function hostname($name = null)
     {
+
+        if($name === null) {
+            return $this->host->getHostname();
+        }
+
         $this->hostName = $name;
         $this->host->hostname($name);
         return $this;
@@ -81,9 +89,20 @@ class Environment
     }
 
 
+    public function parse($string)
+    {
+        return preg_replace_callback('`(\{\{(.*?)\}\})`', function($matches) {
+            $variable = $matches[2];
+            return $this->get($variable);
+        }, $string);
+    }
+
+
+
     public function __call($method, $arguments)
     {
-        return call_user_func_array([$this, $method], $arguments);
+        call_user_func_array([$this->host, $method], $arguments);
+        return $this;
     }
 
     public function enableSudo()

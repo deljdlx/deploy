@@ -36,6 +36,11 @@ class Recipe
         return $choice;
     }
 
+    public function hostname()
+    {
+        return \Deployer\hostname();
+    }
+
 
     protected function registerTasks()
     {
@@ -71,6 +76,20 @@ class Recipe
 
     }
 
+
+    public function replaceInFile($file, $from, $to)
+    {
+        $file = $this->parse($file);
+
+        $this->run(
+            'php -r \''.
+            '$buffer = file_get_contents("'. $file . '");'.
+            '$buffer = str_replace("' . str_replace('"', '\"', $from) . '", "' . str_replace('"', '\"', $to) . '", $buffer);' .
+            'file_put_contents("' . $file . '", $buffer);' .
+            '\''
+        ) ;
+        return $this;
+    }
 
 
 
@@ -139,7 +158,7 @@ class Recipe
 
     public function set($variableName, $value)
     {
-        $this->variables[$variableName] = $value;
+        $this->variables[$variableName] = $this->parse($value);
         \Deployer\set($variableName, $value);
         return $this;
     }
